@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:alpine as builder
 
 ADD . /app
 
@@ -13,6 +13,11 @@ RUN ./node_modules/.bin/grunt vendor
 RUN ./node_modules/.bin/grunt
 RUN ./node_modules/.bin/grunt dist
 
-CMD ["/bin/sh"]
+FROM nginx:alpine
 
-#CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /usr/share/nginx/html/
+
+COPY --from=builder /app/dist/ .
+COPY nginx/default.conf /etc/nginx/conf.d/
+
+CMD ["nginx", "-g", "daemon off;"]

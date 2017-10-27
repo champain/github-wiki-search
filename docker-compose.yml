@@ -1,7 +1,14 @@
 ---
 version: '3'
 services:
-  TODO:
-    build: .
-    volumes:
-      - .:/app
+  nginx_runner:
+    build: ./client
+    ports:
+      - 80:80
+  python_indexer:
+    build: ./server
+  elasticsearch:
+    image: elasticsearch:alpine
+    ports:
+      - 9200:9200
+      - 9300:9300
